@@ -89,7 +89,7 @@ topology:
         
     SPINE3:
       kind: ceos
-      mgmt-ipv4: 172.100.100.102
+      mgmt-ipv4: 172.100.100.115
       startup-config: configs/SPINE3.cfg
       ports:
         - '22002:22'
