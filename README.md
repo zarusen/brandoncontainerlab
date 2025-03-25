@@ -107,7 +107,7 @@ bash -c "$(curl -sL https://get.containerlab.dev)"
 ## Step 6: Clone Example L2LS ContainerLab Topology Repo
 
 ```bash
-git clone https://github.com/PacketAnglers/containerlab.git
+git clone https://github.com/zarusen/brandoncontainerlab.git
 ```
 
 ## Step 7: Start ContainerLab
@@ -119,7 +119,7 @@ Below is a simple L2LS Topology that is part of the repo you just cloned.
 </p>
 
 ```bash
-sudo clab deploy -t containerlab/topologies/L2LS/L2LS.yaml --reconfigure
+sudo clab deploy -t brandoncontainerlab/topologies/L3LS/L3LS.yaml --reconfigure
 ```
 
 ## Step 8: Connect to your ContainerLab
