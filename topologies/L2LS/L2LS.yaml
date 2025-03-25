@@ -1,11 +1,11 @@
 ---
 # -------------------------------------------------------------
 # Arista Data Center Topology
-# 2 Spines & 2 Leaf Pairs with MLAG
+# 3 Spines & 3 Leaf Pairs with MLAG
 # -------------------------------------------------------------
 
 #https://containerlab.dev/manual/topo-def-file/#name
-name: L2LS
+name: L3LS
 
 #https://containerlab.dev/manual/topo-def-file/#prefix
 prefix: ""
@@ -86,6 +86,18 @@ topology:
       labels:
         graph-level: 1
         graph-icon: switch
+        
+    SPINE3:
+      kind: ceos
+      mgmt-ipv4: 172.100.100.102
+      startup-config: configs/SPINE3.cfg
+      ports:
+        - '22002:22'
+        - '8002:80'
+        - '44302:443'
+      labels:
+        graph-level: 1
+        graph-icon: switch
 
 #########################
 # LEAF                  #
@@ -139,14 +151,38 @@ topology:
         graph-level: 2
         graph-icon: switch
 
+    BORDERLEAF1:
+      kind: ceos
+      mgmt-ipv4: 172.100.100.107
+      startup-config: configs/BORDERLEAF1.cfg
+      ports:
+        - '22006:22'
+        - '8006:80'
+        - '44306:443'
+      labels:
+        graph-level: 2
+        graph-icon: switch
+
+    BORDERLEAF2:
+      kind: ceos
+      mgmt-ipv4: 172.100.100.108
+      startup-config: configs/BORDERLEAF2.cfg
+      ports:
+        - '22006:22'
+        - '8006:80'
+        - '44306:443'
+      labels:
+        graph-level: 2
+        graph-icon: switch
+
 ###########################################
 # HOST                                    #
 ###########################################
 
-    HOSTA:
+    HOST1:
       kind: linux
       image: mitchv85/ohv-host
-      mgmt-ipv4: 172.100.100.107
+      mgmt-ipv4: 172.100.100.121
       ports:
         - '22207:22'
       exec:
@@ -155,10 +191,10 @@ topology:
         graph-level: 3
         graph-icon: host
 
-    HOSTB:
+    HOST2:
       kind: linux
       image: mitchv85/ohv-host
-      mgmt-ipv4: 172.100.100.108
+      mgmt-ipv4: 172.100.100.122
       ports:
         - '22208:22'
       exec:
@@ -173,45 +209,70 @@ topology:
 ####################
 # SPINE1 to LEAF   #
 ####################
-    - endpoints: ["SPINE1:et1", "LEAF1:et1"]
-    - endpoints: ["SPINE1:et2", "LEAF2:et1"]
-    - endpoints: ["SPINE1:et3", "LEAF3:et1"]
-    - endpoints: ["SPINE1:et4", "LEAF4:et1"]
+    - endpoints: ["SPINE1:et2", "LEAF1:et3"]
+    - endpoints: ["SPINE1:et3", "LEAF2:et3"]
+    - endpoints: ["SPINE1:et4", "LEAF3:et3"]
+    - endpoints: ["SPINE1:et5", "LEAF4:et3"]
+    - endpoints: ["SPINE1:et6", "BORDERLEAF1:et3"]
+    - endpoints: ["SPINE1:et7", "BORDERLEAF2:et3"]
 
 ####################
 # SPINE2 to LEAF   #
 ####################
-    - endpoints: ["SPINE2:et1", "LEAF1:et2"]
-    - endpoints: ["SPINE2:et2", "LEAF2:et2"]
-    - endpoints: ["SPINE2:et3", "LEAF3:et2"]
-    - endpoints: ["SPINE2:et4", "LEAF4:et2"]
+    - endpoints: ["SPINE2:et2", "LEAF1:et4"]
+    - endpoints: ["SPINE2:et3", "LEAF2:et4"]
+    - endpoints: ["SPINE2:et4", "LEAF3:et4"]
+    - endpoints: ["SPINE2:et5", "LEAF4:et4"]
+    - endpoints: ["SPINE2:et6", "BORDERLEAF1:et4"]
+    - endpoints: ["SPINE2:et7", "BORDERLEAF2:et4"]
+
+####################
+# SPINE3 to LEAF   #
+####################
+    - endpoints: ["SPINE3:et1", "LEAF1:et5"]
+    - endpoints: ["SPINE3:et2", "LEAF2:et5"]
+    - endpoints: ["SPINE3:et3", "LEAF3:et5"]
+    - endpoints: ["SPINE3:et4", "LEAF4:et5"]
+    - endpoints: ["SPINE3:et5", "BORDERLEAF1:et5"]
+    - endpoints: ["SPINE3:et6", "BORDERLEAF2:et5"]
+    
 
 ####################
 # SPINE1 to SPINE2 #
 ####################
-    - endpoints: ["SPINE1:et5", "SPINE2:et5"]
-    - endpoints: ["SPINE1:et6", "SPINE2:et6"]
+    - endpoints: ["SPINE1:et1", "SPINE2:et1"]
+    
 
 ####################
 # LEAF1 to LEAF2   #
 ####################
-    - endpoints: ["LEAF1:et3", "LEAF2:et3"]
-    - endpoints: ["LEAF1:et4", "LEAF2:et4"]
+    - endpoints: ["LEAF1:et1", "LEAF2:et1"]
+    - endpoints: ["LEAF1:et2", "LEAF2:et2"]
 
 ####################
 # LEAF3 to LEAF4   #
 ####################
-    - endpoints: ["LEAF3:et3", "LEAF4:et3"]
-    - endpoints: ["LEAF3:et4", "LEAF4:et4"]
+    - endpoints: ["LEAF3:et1", "LEAF4:et1"]
+    - endpoints: ["LEAF3:et2", "LEAF4:et2"]
+    
+####################
+# BORDERLEAF1 to BORDERLEAF2   #
+####################
+    - endpoints: ["BORDERLEAF1:et1", "BORDERLEAF2:et1"]
+    - endpoints: ["BORDERLEAF1:et2", "BORDERLEAF2:et2"]
 
 ####################
-# HOSTA            #
+# HOST1            #
 ####################
-    - endpoints: ["HOSTA:eth1", "LEAF1:et5"]
-    - endpoints: ["HOSTA:eth2", "LEAF2:et5"]
+    - endpoints: ["HOST1:eth1", "LEAF1:et6"]
+    - endpoints: ["HOST1:eth3", "LEAF1:et7"]
+    - endpoints: ["HOST1:eth2", "LEAF2:et6"]
+    - endpoints: ["HOST1:eth4", "LEAF2:et7"]
 
 ####################
-# HOSTB            #
+# HOST2            #
 ####################
-    - endpoints: ["HOSTB:eth1", "LEAF3:et5"]
-    - endpoints: ["HOSTB:eth2", "LEAF4:et5"]
+    - endpoints: ["HOST2:eth1", "LEAF3:et6"]
+    - endpoints: ["HOST2:eth3", "LEAF3:et7"]
+    - endpoints: ["HOST2:eth2", "LEAF4:et6"]
+    - endpoints: ["HOST2:eth4", "LEAF4:et7"]
