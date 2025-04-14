@@ -89,7 +89,7 @@ topology:
         
     SPINE3:
       kind: ceos
-      mgmt-ipv4: 172.100.100.115
+      mgmt-ipv4: 172.100.100.103
       startup-config: configs/SPINE3.cfg
       ports:
         - '22002:22'
@@ -105,7 +105,7 @@ topology:
 
     LEAF1:
       kind: ceos
-      mgmt-ipv4: 172.100.100.103
+      mgmt-ipv4: 172.100.100.104
       startup-config: configs/LEAF1.cfg
       ports:
         - '22003:22'
@@ -117,7 +117,7 @@ topology:
 
     LEAF2:
       kind: ceos
-      mgmt-ipv4: 172.100.100.104
+      mgmt-ipv4: 172.100.100.105
       startup-config: configs/LEAF2.cfg
       ports:
         - '22004:22'
@@ -129,7 +129,7 @@ topology:
 
     LEAF3:
       kind: ceos
-      mgmt-ipv4: 172.100.100.105
+      mgmt-ipv4: 172.100.100.106
       startup-config: configs/LEAF3.cfg
       ports:
         - '22005:22'
@@ -141,7 +141,7 @@ topology:
 
     LEAF4:
       kind: ceos
-      mgmt-ipv4: 172.100.100.106
+      mgmt-ipv4: 172.100.100.107
       startup-config: configs/LEAF4.cfg
       ports:
         - '22006:22'
@@ -153,7 +153,7 @@ topology:
 
     BORDERLEAF1:
       kind: ceos
-      mgmt-ipv4: 172.100.100.107
+      mgmt-ipv4: 172.100.100.108
       startup-config: configs/BORDERLEAF1.cfg
       ports:
         - '22006:22'
@@ -165,8 +165,24 @@ topology:
 
     BORDERLEAF2:
       kind: ceos
-      mgmt-ipv4: 172.100.100.108
+      mgmt-ipv4: 172.100.100.110
       startup-config: configs/BORDERLEAF2.cfg
+      ports:
+        - '22006:22'
+        - '8006:80'
+        - '44306:443'
+      labels:
+        graph-level: 3
+        graph-icon: switch
+
+###########################################
+# HOST                                    #
+###########################################
+
+    HOST1:
+      kind: ceos
+      mgmt-ipv4: 172.100.100.111
+      startup-config: configs/Host1.cfg
       ports:
         - '22006:22'
         - '8006:80'
@@ -175,33 +191,29 @@ topology:
         graph-level: 2
         graph-icon: switch
 
-###########################################
-# HOST                                    #
-###########################################
-
-    HOST1:
-      kind: linux
-      image: mitchv85/ohv-host
-      mgmt-ipv4: 172.100.100.121
+     HOST2:
+      kind: ceos
+      mgmt-ipv4: 172.100.100.112
+      startup-config: configs/Host1.cfg
       ports:
-        - '22207:22'
-      exec:
-        - bash /usr/local/bin/hostnetconfig.sh -b -i 10.10.10.100/24 -g 10.10.10.1
+        - '22006:22'
+        - '8006:80'
+        - '44306:443'
       labels:
         graph-level: 3
-        graph-icon: host
+        graph-icon: switch
 
-    HOST2:
-      kind: linux
-      image: mitchv85/ohv-host
-      mgmt-ipv4: 172.100.100.122
+     FIREWALL
+      kind: ceos
+      mgmt-ipv4: 172.100.100.113
+      startup-config: configs/FIREWALL.cfg
       ports:
-        - '22208:22'
-      exec:
-        - bash /usr/local/bin/hostnetconfig.sh -b -i 10.20.20.100/24 -g 10.20.20.1
+        - '22006:22'
+        - '8006:80'
+        - '44306:443'
       labels:
         graph-level: 3
-        graph-icon: host
+        graph-icon: switch
 
 #https://containerlab.dev/manual/topo-def-file/#links
   links:
@@ -276,3 +288,11 @@ topology:
     - endpoints: ["HOST2:eth3", "LEAF3:et7"]
     - endpoints: ["HOST2:eth2", "LEAF4:et6"]
     - endpoints: ["HOST2:eth4", "LEAF4:et7"]
+
+####################
+# FIREWALL        #
+####################
+    - endpoints: ["FIREWALL:eth1", "BORDERLEAF1:et6"]
+    - endpoints: ["FIREWALL:eth3", "BORDERLEAF1:et7"]
+    - endpoints: ["FIREWALL:eth2", "BORDERLEAF2:et6"]
+    - endpoints: ["FIREWALL:eth4", "BORDERLEAF2:et7"]
