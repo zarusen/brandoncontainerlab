@@ -191,7 +191,7 @@ topology:
         graph-level: 2
         graph-icon: switch
 
-     HOST2:
+    HOST2:
       kind: ceos
       mgmt-ipv4: 172.100.100.112
       startup-config: configs/Host1.cfg
@@ -203,7 +203,7 @@ topology:
         graph-level: 3
         graph-icon: switch
 
-     FIREWALL
+    FIREWALL
       kind: ceos
       mgmt-ipv4: 172.100.100.113
       startup-config: configs/FIREWALL.cfg
